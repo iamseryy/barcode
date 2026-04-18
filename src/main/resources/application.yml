@@ -1,0 +1,27 @@
+server:
+  port: 5959
+
+spring:
+  application:
+    name: barcode
+  messages:
+    basename: ValidationMessages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+    default-locale: en
+  cache:
+    type: caffeine
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+    resolve-schema-properties: true
+  swagger-ui:
+    path: /docs
+    enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+  pre-loading-locales: en,ru
