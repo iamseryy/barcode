@@ -27,11 +27,11 @@ class OpenApiConfig {
                 Info()
                     .title("Barcode Generator API")
                     .version("1.0.0")
-                    .description("Генерация штрихкодов: DataMatrix, QR, Code 39, Code 93, Code 128, Aztec Code, Codabar, PDF417, \n\n" +
-                            "### Использование:\n" +
-                            "1. Выберите тип кода в ссылке: `datamatrix`, `qr`, `code39`, `code93`, `code128`, `aztec`, `codabar`, `pdf417`\n" +
-                            "2. Укажите `content` — текст для кодирования\n" +
-                            "3. Настройте размер и формат вывода: `png`, `jpeg`")
+                    .description("Barcode generation: DataMatrix, QR, Code 39, Code 93, Code 128, Aztec Code, Codabar, PDF417, \n\n" +
+                            "### Usage:\n" +
+                            "1. Select the code type in the link: `datamatrix`, `qr`, `code39`, `code93`, `code128`, `aztec`, `codabar`, `pdf417`\n" +
+                            "2. Enter content — text for encoding\n" +
+                            "3. Configure the output size and format: `png`, `jpeg`")
                     .contact(
                         Contact()
                             .name("Baltic Shipyard Development Team")

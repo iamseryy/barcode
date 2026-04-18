@@ -1,5 +1,13 @@
 package ru.bz.barcode.presentation.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
@@ -26,28 +34,60 @@ class BarcodeController(
     private val useCase: GenerateBarcodeUseCase
 ) {
     @GetMapping("/{type}")
+    @Operation(
+        summary = "Generate barcode",
+        description = "Supports: DataMatrix, QR, Code 39, Code 93, Code 128, Aztec Code, Codabar, PDF417"
+    )
+    @ApiResponses(value = [
+        ApiResponse(
+            responseCode = "200",
+            content = [
+            Content(
+                mediaType = "image/png",
+                schema = Schema(type = "string", format = "binary")
+            ),
+            Content(
+                mediaType = "image/jpeg",
+                schema = Schema(type = "string", format = "binary")
+            )
+        ]),
+        ApiResponse(responseCode = "400", description = "Invalid parameters") ,
+        ApiResponse(responseCode = "500", description = "Internal generation error")
+    ])
     fun generate(
+        @Parameter(
+            name = "type",
+            description = "The barcode type",
+            required = true,
+            `in` = ParameterIn.PATH,
+            schema = Schema(
+                type = "string",
+                allowableValues = ["datamatrix", "qr", "code39", "code93", "code128", "aztec", "codabar", "pdf417"],
+            ),
+            examples = [ExampleObject(name = "DataMatrix", value = "datamatrix", summary = "DataMatrix")]
+        )
         @PathVariable type: String,
 
         @RequestParam
-        @NotBlank(message = "Параметр 'content' обязателен и не может состоять только из пробелов")
-        @Size(max = 1024, message = "Содержимое не должно превышать 1024 символа")
+        @NotBlank(message = "The 'content' parameter is required and cannot consist of spaces only")
+        @Size(max = 1024, message = "The content must not exceed 1024 characters")
         content: String,
 
         @RequestParam(defaultValue = "200")
-        @Min(value = 50, message = "Минимальная ширина 50px")
-        @Max(value = 2000, message = "Максимальная ширина 2000px")
+        @Min(value = 50, message = "Minimum width 50px")
+        @Max(value = 2000, message = "Maximum height 2000px")
         width: Int,
 
         @RequestParam(defaultValue = "200")
-        @Min(value = 50, message = "Минимальная высота 50px")
-        @Max(value = 2000, message = "Максимальная высота 2000px")
+        @Min(value = 50, message = "Minimum width 50px")
+        @Max(value = 2000, message = "Maximum height 2000px")
         height: Int,
 
         @RequestParam(defaultValue = "png")
-        @Pattern(regexp = "(?i)png|jpeg", message = "Поддерживаются только форматы: png, jpeg")
+        @Pattern(regexp = "(?i)png|jpeg", message = "Supported formats only: png, jpeg")
         mediatype: String
     ): ResponseEntity<ByteArray> {
+        /*
         val barcodeType = try {
             BarcodeType.valueOf(type.uppercase().replace("-", "").replace("_", ""))
         } catch (_: IllegalArgumentException) {
@@ -56,6 +96,13 @@ class BarcodeController(
                 "Неподдерживаемый тип кода. Доступно: datamatrix, qr, code39, code93, code128, aztec, codabar, pdf417"
             )
         }
+        */
+        val barcodeType = BarcodeType.fromHttpValue(type)
+            ?: throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Unsupported code type. Available: datamatrix, qr, code39, code93, code128, aztec, codabar, pdf417"
+            )
+
 
         val imageFormat = ImageFormat.valueOf(mediatype.uppercase())
         val responseMediaType = if (imageFormat == ImageFormat.PNG) MediaType.IMAGE_PNG else MediaType.IMAGE_JPEG

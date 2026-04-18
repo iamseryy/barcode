@@ -24,6 +24,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("tools.jackson.module:jackson-module-kotlin")
     implementation("com.github.ben-manes.caffeine:caffeine")
+    implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework:spring-context-support")
     implementation("com.google.zxing:core:3.5.4")
     implementation("com.google.zxing:javase:3.5.4")

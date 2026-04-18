@@ -10,7 +10,8 @@ spring:
     fallback-to-system-locale: false
     default-locale: en
   cache:
-    type: caffeine
+    caffeine:
+      spec: "maximumSize=500,expireAfterWrite=1h"
 
 
 springdoc:
